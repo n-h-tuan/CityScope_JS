@@ -13,7 +13,6 @@ import SelectedTable from './SelectedTable'
 // * draggable pin https://github.com/visgl/react-map-gl/tree/6.1-release/examples/draggable-markers
 
 export default function CityIOdeckGLmap(props) {
-  console.log(1232);
   const [markerInfo, setMarkerInfo] = useState([])
   const [clicked, setClicked] = useState()
   const [zoom, setZoom] = useState()

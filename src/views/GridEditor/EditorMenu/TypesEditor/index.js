@@ -29,7 +29,18 @@ export default function TypesEditor() {
         NAICS: LanduseTypesList[type].NAICS
           ? JSON.stringify(LanduseTypesList[type].NAICS)
           : null,
-        interactive: LanduseTypesList[type].interactive,
+        interactive: LanduseTypesList[type].interactive
+          ? LanduseTypesList[type].interactive
+          : "web",
+        TypeCode: LanduseTypesList[type].TypeCode
+          ? LanduseTypesList[type].TypeCode
+          : null,
+        IDSColor: LanduseTypesList[type].IDSColor
+          ? LanduseTypesList[type].IDSColor
+          : null,
+        RGB: LanduseTypesList[type].RGB
+          ? LanduseTypesList[type].RGB
+          : null,
       })
     })
     return typesArray

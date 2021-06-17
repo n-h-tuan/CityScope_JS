@@ -6,7 +6,7 @@ import DeckGL from "@deck.gl/react";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { GeoJsonLayer } from "deck.gl";
 import settings from "../../../settings/GridEditorSettings.json";
-import scenarioGeojson from "../../../settings/Scenario_2_wgs84_color.json";
+import scenarioGeojson from "../../../settings/LandUse_0_color.json";
 import { listenToBaseMapCenter } from "../../../redux/actions";
 
 export const _hexToRgb = (hex) => {
@@ -229,24 +229,26 @@ class BaseMap extends Component {
             })
         );
 
-        // layers.push(
-        //     new GeoJsonLayer({
-        //         id: 'scenario-geojson-layer',
-        //         data: scenarioGeojson,
-        //         pickable: false,
-        //         stroked: true,
-        //         filled: true,
-        //         extruded: false,
-        //         lineWidthScale: 2,
-        //         lineWidthMinPixels: 2,
-        //         getFillColor: d => _hexToRgb(d.properties.color),
-        //         // getFillColor: [163, 155, 8, 200],
-        //         // getLineColor: d => colorToRGBArray(d.properties.color),
-        //         // getRadius: 100,
-        //         getLineWidth: 2,
-        //         getElevation: 30
-        //     })
-        // )
+        layers.push(
+            new GeoJsonLayer({
+                id: 'scenario-geojson-layer',
+                data: scenarioGeojson,
+                opacity: 1,
+                pickable: false,
+                stroked: true,
+                filled: true,
+                extruded: false,
+                // lineWidthScale: 2,
+                // lineWidthMinPixels: 2,
+                getFillColor: d => _hexToRgb(d.properties.fill),
+                getLineWidth: 0.5,
+                // getFillColor: [163, 155, 8, 200],
+                // getLineColor: d => colorToRGBArray(d.properties.color),
+                // getRadius: 100,
+                // getLineWidth: 2,
+                // getElevation: 30
+            })
+        )
 
         return layers;
     }

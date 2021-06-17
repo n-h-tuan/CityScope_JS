@@ -1,6 +1,6 @@
 import proj4 from "proj4";
 import { _hexToRgb } from "../../../EditorMap/EditorMap";
-import scenario from '../../../../../settings/Scenario_2_wgs84_color.json';
+import scenario from '../../../../../settings/LandUse_3.json';
 import { featureCollection, centroid, bbox, tag } from "@turf/turf";
 function deg_to_rad(deg) {
     return (deg * Math.PI) / 180;
@@ -14,33 +14,51 @@ const randomProperty = (obj) => {
     return obj[keys[(keys.length * Math.random()) << 0]];
 };
 
-const convertScenarioToWGS84 = (userPrj) => {
-    proj4.defs('User-Projection', userPrj);
-    userPrj = proj4.defs('User-Projection');
+const convertScenarioToWGS84 = (types) => {
     let features = scenario.features;
+    // console.log(types);
     for (let i = 0; i < features.length; i++) {
-        // let color = (typeof features[i].properties.MaQuyUoc !== 'undefined') ? quyuoc[features[i].properties.MaQuyUoc] : quyuoc.DGT;
-        let color = "#00dd5c";
-        features[i].properties.color = color;
-        features[i].properties.stroke = color;
-        features[i].properties['stroke-width'] = 2;
-        features[i].properties['stroke-opacity'] = 1;
-        features[i].properties.fill = color;
-        features[i].properties['fill-opacity'] = 1;
-
-        // if (features[i].geometry.type == "MultiPolygon") {
-        //     for (let j = 0; j < features[i].geometry.coordinates.length; j++) {
-        //         features[i].geometry.coordinates[j] = VN2kToWGSMultiLineString(features[i].geometry.coordinates[j], userPrj);
-        //     }
-        // } else {
-        //     features[i].geometry.coordinates = VN2kToWGSMultiLineString(features[i].geometry.coordinates, userPrj);
+        var color = types.find((el) => {
+            // console.log(el.TypeCode);
+            return el.TypeCode === features[i].properties['TypeCode']
+        });
+        // console.log(features[i].properties['TypeCode']);
+        // console.log(color);
+        color = color.color
+        // if(typeof color !== 'undefined'){
         // }
+        if (typeof color == 'undefined') {
+            console.log('undefine TypeCode', features[i].properties['TypeCode']);
+        }
+        let rgbArr = (features[i].properties['RGB']).split(',')
+        rgbArr = rgbArr.map(el => parseFloat(el));
+        rgbArr.push(220);
+
+        // let height = 0;
+        // if (features[i].properties.Height) {
+        //     height = features[i].properties.Height
+        //     if (height.includes("-")) {
+        //         height = height.split('');
+        //         height = height[height.length - 1];
+        //     }
+        //     height = parseFloat(height);
+        // }
+
+        // features[i].properties.height = height;
+        features[i].properties.color = rgbArr;
+        // features[i].properties.color = JSON.parse(features[i].properties.color);
+        features[i].properties.stroke = '#3f3f3f';
+        features[i].properties['stroke-width'] = 0.5;
+        features[i].properties['stroke-opacity'] = 1;
+        features[i].properties['fill'] = color;
+        features[i].properties['fill-opacity'] = 1;
     }
     let geojson = {
         "type": "FeatureCollection",
         "features": features,
     }
-    console.log(geojson);
+    // console.log(geojson);
+    console.log(JSON.stringify(geojson));
 }
 
 const VN2kToWGSMultiLineString = (coordinates, userPrj) => {
@@ -53,9 +71,6 @@ const VN2kToWGSMultiLineString = (coordinates, userPrj) => {
 }
 
 const joinGridAndPrivateGeojson = (privateGeojson, gridGeojson, types) => {
-    console.log('geoJson', gridGeojson);
-    console.log('privateGeojson', privateGeojson);
-    console.log('types', types);
     // Get grid cell centroids
     let gridCentroids = featureCollection(gridGeojson.features.map(obj => {
         let cellCentroid = centroid(obj)
@@ -64,11 +79,9 @@ const joinGridAndPrivateGeojson = (privateGeojson, gridGeojson, types) => {
         } // Later populated with the sjoin
         return cellCentroid
     }))
-    console.log('gridCentroids', gridCentroids);
 
     // Assing landuse to centroid with polygons (Spatial join)
     let gridCentroidsWithLanduse = tag(gridCentroids, privateGeojson, 'color', 'color')
-    console.log('gridCentroidsWithLanduse', gridCentroidsWithLanduse);
 
     // Set each cell properties according to types
     for (let i = 0; i < gridCentroidsWithLanduse.features.length; i++) {
@@ -217,7 +230,7 @@ export const gridCreator = (gridProps, typesList) => {
         gridPnts.push(geojsonPolygon);
     }
     geojsonFeatureCollection.features = gridPnts;
-    joinGridAndPrivateGeojson(scenario, geojsonFeatureCollection, types);
-    // convertScenarioToWGS84(userPrj);
+    // joinGridAndPrivateGeojson(scenario, geojsonFeatureCollection, types);
+    convertScenarioToWGS84(types);
     return geojsonFeatureCollection;
 };

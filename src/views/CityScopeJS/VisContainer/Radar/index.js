@@ -7,7 +7,6 @@ const radarSize = 300;
 const colorRange = ["#ff5278", "#660016"];
 
 export default function Radar(props) {
-    console.log('vào Radar');
     const [radarData, setRadarData] = useState(null);
 
     const createRadarData = (indicators) => {

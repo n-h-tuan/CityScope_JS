@@ -37,7 +37,7 @@ export default function CityScopeJS() {
   return (
     <>
       {tableName && <CityIO tableName={tableName} />}
-      {isReady && <CSjsMain cityIOdata={cityIOdata} tableName={tableName} />}
+      {isReady && <CSjsMain cityIOdata={cityIOdata} tableName={tableName}/>}
       {isDone && <CityIOviewer />}
       <LoadingSpinner />
     </>

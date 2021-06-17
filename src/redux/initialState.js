@@ -30,7 +30,7 @@ const initialState = {
     SELECTED_TYPE: null,
     READY: false,
     LOADING: false,
-
+    CURRENT_VIEW_OPTION: "",
     /**
      * ! EDITOR INIT STATE
      */

@@ -22,7 +22,11 @@ import {
   GeojsonLayer,
 } from './deckglLayers'
 
-export default function Map() {
+export default function Map(props) {
+  const pitchMap = props.pitchMap
+  const zoomMap = props.zoomMap
+  const autoRotate = props.autoRotate
+  const onlyMap = props.onlyMap
   const [draggingWhileEditing, setDraggingWhileEditing] = useState(false)
   const [selectedCellsState, setSelectedCellsState] = useState(null)
   const [viewState, setViewState] = useState(settings.map.initialViewState)
@@ -61,7 +65,11 @@ export default function Map() {
   ])
 
   var ABMOn = menu.includes('ABM')
-  var rotateOn = menu.includes('ROTATE')
+  if (autoRotate) {
+    var rotateOn = autoRotate;
+  } else {
+    var rotateOn = menu.includes('ROTATE')
+  }
   var shadowsOn = menu.includes('SHADOWS')
   var editOn = menu.includes('EDIT')
   var resetViewOn = menu.includes('RESET_VIEW')
@@ -138,6 +146,7 @@ export default function Map() {
   //  * to cityIO header data
   //  * https://github.com/uber/deck.gl/blob/master/test/apps/viewport-transitions-flyTo/src/app.js
   //  */
+
   const _setViewStateToTableHeader = () => {
     const header = cityioData.GEOGRID.properties.header
 
@@ -145,8 +154,8 @@ export default function Map() {
       ...viewState,
       longitude: header.longitude,
       latitude: header.latitude,
-      zoom: 15,
-      pitch: 0,
+      zoom: zoomMap ?? 14,
+      pitch: pitchMap ?? 0,
       bearing: 360 - header.rotation,
       orthographic: true,
     })
@@ -193,7 +202,7 @@ export default function Map() {
     }),
     ACCESS: AccessLayer({
       data: access,
-      cellSize: cityioData.GEOGRID.properties.header.cellSize,
+      cellSize: cityioData.GEOGRID?.properties?.header.cellSize,
     }),
     TEXTUAL: TextualLayer({
       data: textualData && textualData,
@@ -223,7 +232,6 @@ export default function Map() {
     }
     return layers
   }
-
   return (
     <div
       className="baseMap"
@@ -261,10 +269,11 @@ export default function Map() {
         layers={_renderLayers()}
         effects={effectsRef.current}
         controller={{
-          touchZoom: true,
-          touchRotate: true,
-          dragPan: !draggingWhileEditing,
-          dragRotate: !draggingWhileEditing,
+          touchZoom: onlyMap ? false : true,
+          touchRotate: onlyMap ? false : true,
+          scrollZoom: onlyMap ? false : true,
+          dragPan: onlyMap ? false : !draggingWhileEditing,
+          dragRotate: onlyMap ? false : !draggingWhileEditing,
           keyboard: false,
         }}
       >
@@ -273,7 +282,7 @@ export default function Map() {
           dragRotate={true}
           reuseMaps={true}
           mapboxApiAccessToken={process.env.REACT_APP_MAPBOX_TOKEN}
-          mapStyle={settings.map.mapStyle.sat}
+          mapStyle={autoRotate ? "" : settings.map.mapStyle.sat}
           preventStyleDiffing={true}
         />
       </DeckGL>

@@ -10,19 +10,19 @@ function VisContainer(props) {
         <>
             {props.cityIOdata && (
                 <List>
-                    <ListItem alignItems="center">
+                    <ListItem style={{justifyContent: "center"}}>
                         <AreaCalc cityioData={props.cityIOdata} />
                     </ListItem>
 
                     <Divider />
 
-                    <ListItem>
+                    <ListItem style={{justifyContent: "center"}}>
                         <Radar cityioData={props.cityIOdata} />
                     </ListItem>
 
                     <Divider />
 
-                    <ListItem>
+                    <ListItem style={{justifyContent: "center"}}>
                         <BarChart cityioData={props.cityIOdata} />
                     </ListItem>
                 </List>

@@ -29,6 +29,7 @@ export default function CityIO(props) {
     const [hashes, setHashes] = useState({});
     const cityioURL = `${settings.cityIO.baseURL}${tableName}/`;
     const cityioData = useSelector((state) => state.CITYIO);
+    console.log('cityioData',cityioData);
 
     const dispatch = useDispatch();
 

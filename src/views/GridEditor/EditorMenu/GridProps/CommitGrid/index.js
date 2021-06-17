@@ -8,6 +8,7 @@ import globalSettings from '../../../../../settings/settings.json'
 import Typography from '@material-ui/core/Typography'
 import { useSelector } from 'react-redux'
 import Link from '@material-ui/core/Link'
+import scenario from '../../../../../settings/LandUse_3_color.json'
 
 const reqResonseUI = (response, tableName) => {
   let cityscopeJSendpoint =
@@ -124,9 +125,14 @@ export default function CommitGrid(props) {
   const postGridToCityIO = () => {
     let GEOGRIDstruct = settings.GEOGRID
     let typesList = reduxState.TYPES_LIST
-    let geoJsonFeatures = reduxState.GRID_CREATED.features
+    // let geoJsonFeatures = reduxState.GRID_CREATED.features
+    let geoJsonFeatures = scenario.features
     let gridProps = props.gridProps
     // take grid struct from settings
+    // console.log('GEOGRIDstruct', GEOGRIDstruct);
+    // console.log('typesList', typesList);
+    // console.log('geoJsonFeatures', geoJsonFeatures);
+    // console.log('gridProps', gridProps);
     let GEOGRID_object = makeGEOGRIDobject(
       GEOGRIDstruct,
       typesList,
